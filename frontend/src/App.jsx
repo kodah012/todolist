@@ -1,34 +1,34 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import './App.css'
+import { useEffect, useState } from 'react';
+import "./App.css";
+
+const AVATAR_1 = "https://res.cloudinary.com/dqse2txyi/image/upload/v1666049372/axum_server/img_avatar_lf92vl.png";
+const AVATAR_2 = "https://res.cloudinary.com/dqse2txyi/image/upload/v1666049372/axum_server/img_avatar2_erqray.png";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [people, setPeople] = useState([]);
 
+  useEffect(() => {
+    fetch("http://localhost:3000/people")
+      .then(res => res.json())
+      .then(people => setPeople(people));
+  });
+  
   return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+    <div>
+      {people.map((person, index) => (
+        <div key={index} className="card">
+          <img src={index % 2 == 0 ? AVATAR_1 : AVATAR_2} alt="Avatar" />
+          <div className="container">
+            <h4>
+              <b>{person.name}</b>
+            </h4>
+            <p>Age: {person.age}</p>
+            <p>Favorite Food: {person.favorite_food ?? "Unknown"}</p>
+          </div>
+        </div>
+      ))}
     </div>
-  )
+  );
 }
 
-export default App
+export default App;

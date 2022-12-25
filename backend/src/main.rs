@@ -1,48 +1,56 @@
 use axum::{
-    routing::{get, post},
     http::StatusCode,
     response::IntoResponse,
+    routing::get,
     Json,
-    Router,
-    extract::Path
+    Router
 };
 use std::net::SocketAddr;
-use serde::{Deserialize, Serialize};
-use serde_json::json;
+use tower_http::cors::{Any, CorsLayer};
 
-struct CreateUser {
-    username: String,
-}
-
-struct User {
-    id: u64,
-    username: String,
-}
+mod types;
+use types::Person;
 
 #[tokio::main]
 async fn main() {
-    tracing_subscriber::fmt::init();
+    let cors = CorsLayer::new().allow_origin(Any);
 
     let app = Router::new()
         .route("/", get(root))
-        .route("/hello/:name", get(json_hello));
-
-    let addr = SocketAddr::from(([127, 0, 0, 1], 3001));
+        .route("/people", get(get_people))
+        .layer(cors);
     
-    tracing::info!("Listening on {}", addr);
-
+    let addr = SocketAddr::from(([127, 0, 0, 1], 3000));
+    println!("Listening on {}", addr);
+    
     axum::Server::bind(&addr)
         .serve(app.into_make_service())
         .await
-        .expect("Server failed");
+        .expect("Failed to create server");
 }
 
 async fn root() -> String {
     "Hello, world!".to_owned()
 }
 
-async fn json_hello(Path(name): Path<String>) -> impl IntoResponse {
-    let greeting = name.as_str();
-    let hello = String::from("Hello ");
-    (StatusCode::OK, Json(json!({"message": hello + greeting})))
+async fn get_people() -> impl IntoResponse {
+    let people = vec![
+        Person {
+            name: String::from("Person A"),
+            age: 36,
+            favorite_food: Some(String::from("Pizza")),
+        },
+        Person {
+            name: String::from("Person B"),
+            age: 5,
+            favorite_food: Some(String::from("Broccoli")),
+        },
+        Person {
+            name: String::from("Person C"),
+            age: 100,
+            favorite_food: None,
+        },
+    ];
+    
+    (StatusCode::OK, Json(people))
 }
