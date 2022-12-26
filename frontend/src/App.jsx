@@ -8,7 +8,7 @@ function App() {
   const [people, setPeople] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:3000/people")
+    fetch("http://0.0.0.0:3000/people")
       .then(res => res.json())
       .then(people => setPeople(people));
   });

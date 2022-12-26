@@ -2,10 +2,13 @@
   "name": "todolist",
   "version": "1.0.0",
   "scripts": {
-    "init": "npm install --prefix frontend",
     "dev": "concurrently 'npm run dev-backend' 'npm run dev-frontend'",
-    "dev-backend": "cargo run --manifest-path backend/Cargo.toml",
-    "dev-frontend": "npm run dev --prefix frontend"
+    "dev-init": "npm install && npm install --prefix frontend",
+    "dev-frontend": "npm run dev --prefix frontend",
+    "dev-backend": "cargo run --profile=dev --manifest-path backend/Cargo.toml",
+    "prod-init": "npm install --omit=dev && npm install --omit=dev --prefix frontend",
+    "prod-frontend": "npm run build --prefix frontend",
+    "prod-backend": "cargo run --profile=release --manifest-path backend/Cargo.toml"
   },
   "devDependencies": {
     "concurrently": "^7.6.0"
