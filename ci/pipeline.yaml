@@ -68,7 +68,7 @@ jobs:
     file: repo/ci/tasks/build.yaml
     privileged: true
     params:
-      CONTEXT: repo/frontend
+      CONTEXT: repo/backend
     output_mapping:
       backend_image: image
 
