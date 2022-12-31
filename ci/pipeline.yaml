@@ -44,6 +44,27 @@ jobs:
   - get: repo
     trigger: true
     passed: [build-ytt-pipeline]
+
+  - task: build-nginx-config
+    config:
+      platform: linux
+      type: docker-image
+      source:
+        repository: busybox
+      params:
+        NGINX_PORT: 1337
+      inputs:
+      - name: repo
+      outputs:
+      - name: repo
+      run:
+        path: sh
+        args:
+        - -cx
+        - |
+          cd repo/frontend
+          NGINX_PORT=$NGINX_PORT envsubst < nginx.conf > nginx.conf
+
   - task: get-tag
     config:
       platform: linux
