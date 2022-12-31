@@ -62,12 +62,7 @@ jobs:
     params:
       CONTEXT: repo/frontend
     output_mapping:
-      frontend_image: image
-
-  - put: todolist-frontend
-    params:
-      image: frontend_image/image.tar
-      additional_tags: repo/tag
+      image: frontend_image
 
   - task: build-backend
     file: repo/ci/tasks/build.yaml
@@ -75,7 +70,12 @@ jobs:
     params:
       CONTEXT: repo/backend
     output_mapping:
-      backend_image: image
+      image: backend_image
+
+  - put: todolist-frontend
+    params:
+      image: frontend_image/image.tar
+      additional_tags: repo/tag
 
   - put: todolist-backend
     params:
