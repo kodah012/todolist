@@ -57,7 +57,8 @@ jobs:
           echo $(git tag --list "v*" | sort -V | tail -n1) > tag
 
   - task: build-frontend
-    file: repo/ci/tasks/build.yaml
+    file: repo/ci/tasks/build.yaml]
+    privileged: true
     input_mapping:
       repo: repo/frontend
     output_mapping:
@@ -65,6 +66,7 @@ jobs:
 
   - task: build-backend
     file: repo/ci/tasks/build.yaml
+    privileged: true
     input_mapping:
       repo: repo/backend
     output_mapping:
