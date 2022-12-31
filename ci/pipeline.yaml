@@ -60,7 +60,6 @@ jobs:
     file: repo/ci/tasks/build.yaml
     input_mapping:
       - repo: repo/frontend
-    privileged: true
     output_mapping:
       frontend_image: image
 
@@ -68,7 +67,6 @@ jobs:
     file: repo/ci/tasks/build.yaml
     input_mapping:
       - repo: repo/backend
-    privileged: true
     output_mapping:
       backend_image: image
 

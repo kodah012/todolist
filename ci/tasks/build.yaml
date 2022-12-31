@@ -1,5 +1,6 @@
 ---
 platform: linux
+privileged: true
 image_resource:
   type: registry-image
   source:
@@ -7,9 +8,9 @@ image_resource:
     tag: latest
 inputs:
 - name: repo
+outputs:
+- name: image
 params:
   CONTEXT: repo
 run:
   path: build
-outputs:
-- name: image
