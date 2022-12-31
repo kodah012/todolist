@@ -8,11 +8,18 @@ resources:
     private_key: |
             ((khoa-git.private-key))
 
-- name: todolist
+- name: todolist-frontend
   type: registry-image
   icon: docker
   source:
-    repository: 10.109.32.50:5000/todolist
+    repository: 10.109.32.50:5000/todolist-frontend
+    insecure: true
+
+- name: todolist-backend
+  type: registry-image
+  icon: docker
+  source:
+    repository: 10.109.32.50:5000/todolist-backend
     insecure: true
 
 jobs:
@@ -29,6 +36,7 @@ jobs:
   plan:
   - get: repo
     trigger: true
+
   - task: get-tag
     config:
       platform: linux
@@ -48,23 +56,24 @@ jobs:
           cd repo
           echo $(git tag --list "v*" | sort -V | tail -n1) > tag
 
-  - task: build-and-push
+  - task: build-frontend
+    file: repo/ci/tasks/build.yaml
     privileged: true
-    config:
-      platform: linux
-      image_resource:
-        type: registry-image
-        source:
-          repository: concourse/oci-build-task
-      inputs:
-      - name: repo
-      outputs:
-      - name: image
-      params:
-        CONTEXT: repo/frontend
-      run:
-        path: build
-  - put: todolist
+    output_mapping:
+      frontend_image: image
+
+  - task: build-backend
+    file: repo/ci/tasks/build.yaml
+    privileged: true
+    output_mapping:
+      backend_image: image
+
+  - put: todolist-frontend
     params:
-      image: image/image.tar
+      image: frontend_image/image.tar
+      additional_tags: repo/tag
+
+  - put: todolist-backend
+    params:
+      image: backend_image/image.tar
       additional_tags: repo/tag
