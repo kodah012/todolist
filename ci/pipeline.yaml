@@ -1,3 +1,5 @@
+#@ load("@ytt:data", "data")
+
 resources:
 - name: repo
   type: git
@@ -24,14 +26,29 @@ resources:
 
 jobs:
 - name: sync-pipeline
-  serial: true
+  serial_groups: [deployment]
   public: true
   plan:
   - get: repo
     trigger: true
   - set_pipeline: self
     file: repo/ci/pipeline.yaml
+
+- name: build-ytt-pipeline
+  serial_groups: [deployment]
+  public: true
+  plan:
+    - get: repo
+      trigger: true
+    - task: build-ytt-pipeline
+      file: repo/ci/tasks/build-ytt-pipeline.yaml
+      output_mapping:
+        repo: repo
+    - set_pipeline: self
+      file: repo/ci/ytt-pipeline.yaml
+
 - name: build-and-push
+  serial_groups: [deployment]
   public: true
   plan:
   - get: repo
@@ -55,29 +72,17 @@ jobs:
         - |
           cd repo
           echo $(git tag --list "v*" | sort -V | tail -n1) > tag
-
-  - task: build-frontend
+  #@ for image in data.values.images:
+  - task: #@ "build-{}".format(image.name)
     file: repo/ci/tasks/build.yaml
     privileged: true
     params:
-      CONTEXT: repo/frontend
+      CONTEXT: #@ "repo/{}".format(image.name)
     output_mapping:
-      image: frontend_image
+      image: #@ "{}_image".format(image.name)
 
-  - task: build-backend
-    file: repo/ci/tasks/build.yaml
-    privileged: true
+  - put: #@ "todolist-{}".format(image.name)
     params:
-      CONTEXT: repo/backend
-    output_mapping:
-      image: backend_image
-
-  - put: todolist-frontend
-    params:
-      image: frontend_image/image.tar
+      image: #@ "{}_image/image.tar".format(image.name)
       additional_tags: repo/tag
-
-  - put: todolist-backend
-    params:
-      image: backend_image/image.tar
-      additional_tags: repo/tag
+  #@ end
