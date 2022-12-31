@@ -26,7 +26,6 @@ resources:
 
 jobs:
 - name: build-ytt-pipeline
-  serial_groups: [deployment]
   public: true
   plan:
     - get: repo
@@ -44,7 +43,7 @@ jobs:
   plan:
   - get: repo
     trigger: true
-
+    passed: [build-ytt-pipeline]
   - task: get-tag
     config:
       platform: linux
