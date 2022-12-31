@@ -51,7 +51,7 @@ jobs:
       image_resource:
         type: registry-image
         source:
-          repository: alpine
+          repository: bhgedigital/envsubst
           tag: latest
       params:
         NGINX_PORT: 1337
