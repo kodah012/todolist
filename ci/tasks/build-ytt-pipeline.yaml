@@ -10,7 +10,7 @@ inputs:
 outputs:
 - name: repo
 run:
-  path: /bin/bash
+  path: /bin/sh
   args:
   - -exc
   - |

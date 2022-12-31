@@ -25,15 +25,6 @@ resources:
     insecure: true
 
 jobs:
-- name: sync-pipeline
-  serial_groups: [deployment]
-  public: true
-  plan:
-  - get: repo
-    trigger: true
-  - set_pipeline: self
-    file: repo/ci/pipeline.yaml
-
 - name: build-ytt-pipeline
   serial_groups: [deployment]
   public: true
