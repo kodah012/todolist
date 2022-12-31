@@ -59,16 +59,16 @@ jobs:
   - task: build-frontend
     file: repo/ci/tasks/build.yaml
     privileged: true
-    input_mapping:
-      repo: repo/frontend
+    params:
+      CONTEXT: repo/frontend
     output_mapping:
       frontend_image: image
 
   - task: build-backend
     file: repo/ci/tasks/build.yaml
     privileged: true
-    input_mapping:
-      repo: repo/backend
+    params:
+      CONTEXT: repo/frontend
     output_mapping:
       backend_image: image
 

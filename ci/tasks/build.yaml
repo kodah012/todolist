@@ -9,7 +9,5 @@ inputs:
 - name: repo
 outputs:
 - name: image
-params:
-  CONTEXT: repo
 run:
   path: build
