@@ -7,6 +7,8 @@ image_resource:
     tag: latest
 inputs:
 - name: repo
+params:
+  CONTEXT: repo
 run:
   path: build
 outputs:
