@@ -38,7 +38,6 @@ jobs:
       file: repo/ci/ytt-pipeline.yaml
 
 - name: build-and-push
-  serial_groups: [deployment]
   public: true
   plan:
   - get: repo
